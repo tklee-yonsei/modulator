@@ -1,5 +1,5 @@
 {
-	"name": "API Server Dev - Preprocess",
+	"name": "API Server Dev - Coding",
 	"build": {
         "dockerfile": "../Dockerfile.vsdev",
         "context": ".."
