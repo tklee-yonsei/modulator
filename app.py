@@ -1,51 +1,61 @@
 from flask import Flask, jsonify, request
+from coder.qam_coder import QAMCoder
+from coder.qpsk_coder import QPSKCoder
 
 app = Flask(__name__)
 
-# Mock QAM Encoding endpoint
+# QAM 및 QPSK 인코더/디코더 인스턴스 생성
+qam_coder = QAMCoder()
+qpsk_coder = QPSKCoder()
+
+# QAM Encoding endpoint
 @app.route("/encode/qam", methods=["POST"])
-def mock_encode_qam():
+def encode_qam():
     input_data = request.json
-    signal_length = len(input_data.get("signal", []))
-    
-    # 임의의 encoded_signal 생성 (길이 맞춤)
-    encoded_signal = [{"I": 0.707, "Q": 0.707} for _ in range(signal_length)]
+    signal = input_data.get("signal", [])
+    modulation_order = input_data.get("modulation_order", 16)
+
+    # QAM 인코딩 처리
+    encoded_signal = qam_coder.encode(signal, modulation_order)
     
     response_data = {"encoded_signal": encoded_signal}
     return jsonify(response_data)
 
-# Mock QAM Decoding endpoint
+# QAM Decoding endpoint
 @app.route("/decode/qam", methods=["POST"])
-def mock_decode_qam():
+def decode_qam():
     input_data = request.json
     encoded_signal = input_data.get("encoded_signal", [])
-    
-    # 입력 신호의 길이와 동일한 길이의 decoded_signal 생성
-    decoded_signal = [1] * len(encoded_signal)
+    modulation_order = input_data.get("modulation_order", 16)
+
+    # QAM 디코딩 처리
+    decoded_signal = qam_coder.decode(encoded_signal, modulation_order)
     
     response_data = {"decoded_signal": decoded_signal}
     return jsonify(response_data)
 
-# Mock QPSK Encoding endpoint
+# QPSK Encoding endpoint
 @app.route("/encode/qpsk", methods=["POST"])
-def mock_encode_qpsk():
+def encode_qpsk():
     input_data = request.json
-    signal_length = len(input_data.get("signal", []))
-    
-    # 임의의 encoded_signal 생성 (길이 맞춤)
-    encoded_signal = [{"I": 1.0, "Q": 1.0} for _ in range(signal_length)]
+    signal = input_data.get("signal", [])
+    modulation_order = input_data.get("modulation_order", 4)
+
+    # QPSK 인코딩 처리
+    encoded_signal = qpsk_coder.encode(signal, modulation_order)
     
     response_data = {"encoded_signal": encoded_signal}
     return jsonify(response_data)
 
-# Mock QPSK Decoding endpoint
+# QPSK Decoding endpoint
 @app.route("/decode/qpsk", methods=["POST"])
-def mock_decode_qpsk():
+def decode_qpsk():
     input_data = request.json
     encoded_signal = input_data.get("encoded_signal", [])
-    
-    # 입력 신호의 길이와 동일한 길이의 decoded_signal 생성
-    decoded_signal = [1] * len(encoded_signal)
+    modulation_order = input_data.get("modulation_order", 4)
+
+    # QPSK 디코딩 처리
+    decoded_signal = qpsk_coder.decode(encoded_signal, modulation_order)
     
     response_data = {"decoded_signal": decoded_signal}
     return jsonify(response_data)
