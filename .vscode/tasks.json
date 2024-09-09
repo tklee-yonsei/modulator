@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Docker 이미지 빌드",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "build",
+                "-f",
+                "Dockerfile.mock",
+                "-t",
+                "mock-coding-server",
+                "."
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Coding Server mock을 위한 Docker 이미지를 빌드합니다."
+        },
+        {
+            "label": "Docker에서 Coding Server mock 실행 (포트 5002)",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "--name",
+                "container__mock-coding-server",
+                "-p",
+                "5002:5002",
+                "mock-coding-server"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Docker 컨테이너에서 Preprocess Server mock 서버를 실행합니다."
+        }
+    ]
+}
