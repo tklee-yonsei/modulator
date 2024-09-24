@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 
-class CoderInterface(ABC):
+class Modulator(ABC):
     @abstractmethod
-    def encode(self, signal, modulation_order):
+    def modulate(self, bits):
         pass
 
     @abstractmethod
-    def decode(self, encoded_signal, modulation_order):
+    def demodulate(self, symbols):
         pass
