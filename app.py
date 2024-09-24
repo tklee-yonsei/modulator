@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
-from coder.qam_coder import QAMCoder
-from coder.qpsk_coder import QPSKCoder
+from modulation.qam_coder import QAMCoder
+from modulation.qpsk_coder import QPSKCoder
 
 app = Flask(__name__)
 
