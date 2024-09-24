@@ -60,6 +60,12 @@
     }
     ```
 
+## 에러
+
+- **2001**: Invalid encoding/decoding method
+- **2002**: Missing data_bits/coded_bits
+- **2003**: Invalid data_bits/coded_bits format
+
 ## 시작하기
 
 이 섹션에서는 다양한 환경에서 전처리 서버를 설정하고, 
