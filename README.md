@@ -1,14 +1,16 @@
-# Team 2 - Coding API Documentation
+# 팀 2 - 변복조 API 문서
 
-This document provides an overview of the coding APIs developed by Team 2. The coding server handles encoding and decoding tasks using QAM and QPSK modulation techniques. 
+변복조 서버를 위한 API 문서입니다.
 
-## API Endpoints
+## API 엔드포인트
 
-### 1. QAM Encoding
+### 1. 변조
 
-- **URL**: `/encode/qam`
+- **URL**: `/modulate/<method>`
+- **Parameters**: 
+  - `<method>`: `qpsk`, `bpsk`
 - **Method**: `POST`
-- **Description**: Encodes a given signal using QAM (Quadrature Amplitude Modulation).
+- **Description**: 신호를 변조 후, 변조된 신호를 돌려줍니다.
 
 #### Request
 
@@ -16,8 +18,7 @@ This document provides an overview of the coding APIs developed by Team 2. The c
 - **Body**:
     ```json
     {
-      "signal": [1, 0, 1, 1],
-      "modulation_order": 16
+      "bits": "11010011"
     }
     ```
 
@@ -27,20 +28,17 @@ This document provides an overview of the coding APIs developed by Team 2. The c
 - **Body**:
     ```json
     {
-      "encoded_signal": [
-        {"I": 0.707, "Q": 0.707},
-        {"I": -0.707, "Q": 0.707},
-        {"I": -0.707, "Q": -0.707},
-        {"I": 0.707, "Q": -0.707}
-      ]
+      "symbols": [[real1, imag1], [real2, imag2], ...]
     }
     ```
 
-### 2. QAM Decoding
+### 2. 복조
 
-- **URL**: `/decode/qam`
+- **URL**: `/decode/<method>`
+- **Parameters**: 
+  - `<method>`: `qpsk`, `bpsk`
 - **Method**: `POST`
-- **Description**: Decodes a given encoded signal using QAM (Quadrature Amplitude Modulation).
+- **Description**: 신호를 복조 후, 복조된 신호를 돌려줍니다.
 
 #### Request
 
@@ -48,13 +46,7 @@ This document provides an overview of the coding APIs developed by Team 2. The c
 - **Body**:
     ```json
     {
-      "encoded_signal": [
-        {"I": 0.707, "Q": 0.707},
-        {"I": -0.707, "Q": 0.707},
-        {"I": -0.707, "Q": -0.707},
-        {"I": 0.707, "Q": -0.707}
-      ],
-      "modulation_order": 16
+      "symbols": [[real1, imag1], [real2, imag2], ...]
     }
     ```
 
@@ -64,109 +56,50 @@ This document provides an overview of the coding APIs developed by Team 2. The c
 - **Body**:
     ```json
     {
-      "decoded_signal": [1, 0, 1, 1]
+      "bits": "11010011"
     }
     ```
 
-### 3. QPSK Encoding
+## 시작하기
 
-- **URL**: `/encode/qpsk`
-- **Method**: `POST`
-- **Description**: Encodes a given signal using QPSK (Quadrature Phase Shift Keying).
+이 섹션에서는 다양한 환경에서 전처리 서버를 설정하고, 
+실행하는 방법에 대한 지침을 제공합니다.
 
-#### Request
+### 로컬 개발
 
-- **Content-Type**: `application/json`
-- **Body**:
-    ```json
-    {
-      "signal": [1, 0, 1, 1],
-      "modulation_order": 4
-    }
-    ```
+로컬 개발 환경에서 전처리 서버를 실행하려면, 
+Docker가 설치되어 있는지 확인하고, 
+제공된 Dockerfile을 사용하여 서버를 빌드하고 실행하세요.
 
-#### Response
-
-- **Content-Type**: `application/json`
-- **Body**:
-    ```json
-    {
-      "encoded_signal": [
-        {"I": 1.0, "Q": 1.0},
-        {"I": -1.0, "Q": 1.0},
-        {"I": -1.0, "Q": -1.0},
-        {"I": 1.0, "Q": -1.0}
-      ]
-    }
-    ```
-
-### 4. QPSK Decoding
-
-- **URL**: `/decode/qpsk`
-- **Method**: `POST`
-- **Description**: Decodes a given encoded signal using QPSK (Quadrature Phase Shift Keying).
-
-#### Request
-
-- **Content-Type**: `application/json`
-- **Body**:
-    ```json
-    {
-      "encoded_signal": [
-        {"I": 1.0, "Q": 1.0},
-        {"I": -1.0, "Q": 1.0},
-        {"I": -1.0, "Q": -1.0},
-        {"I": 1.0, "Q": -1.0}
-      ],
-      "modulation_order": 4
-    }
-    ```
-
-#### Response
-
-- **Content-Type**: `application/json`
-- **Body**:
-    ```json
-    {
-      "decoded_signal": [1, 0, 1, 1]
-    }
-    ```
-
-## Getting Started
-
-This section provides instructions on how to set up and run the preprocessing server in different environments.
-
-### Local Development
-
-To run the preprocessing server in a local development environment, ensure you have Docker installed and use the provided Dockerfile to build and run the server.
-
-1. **Build the Docker image**:
+1. **Docker 이미지 빌드**:
     ```bash
     docker build -f Dockerfile.dev -t dev-coding-server .
     ```
 
-2. **Run the Docker container**:
+2. **Docker 컨테이너 실행**:
     ```bash
     docker run -p 5002:5002 -v $(pwd):/app --rm --name container__dev-coding-server dev-coding-server
     ```
 
-The server will be available on `http://localhost:5002`.
+서버는 `http://localhost:5002`에서 사용할 수 있습니다.
 
 ### mock
 
-To run the preprocessing server in a mock environment, ensure you have Docker installed and use the provided Dockerfile to build and run the server.
+mock 환경에서 전처리 서버를 실행하려면, 
+Docker가 설치되어 있는지 확인하고, 
+제공된 Dockerfile을 사용하여 서버를 빌드하고 실행하세요.
 
-1. **Build the Docker image**:
+1. **Docker 이미지 빌드**:
     ```bash
     docker build -f Dockerfile.mock -t mock-coding-server .
     ```
 
-2. **Run the Docker container**:
+2. **Docker 컨테이너 실행**:
     ```bash
     docker run -p 6002:6002 --rm --name container__mock-coding-server mock-coding-server
     ```
 
-The server will be available on `http://localhost:6002`.
+서버는 `http://localhost:6002`에서 사용할 수 있습니다.
 
 ## License
 
