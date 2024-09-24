@@ -1,65 +1,48 @@
-from flask import Flask, jsonify, request
-from modulation.qam_coder import QAMCoder
-from modulation.qpsk_coder import QPSKCoder
+from flask import Flask, request, jsonify
+from modulation.qpsk_modulator import QPSKModulator
+from modulation.bpsk_modulator import BPSKModulator
 
 app = Flask(__name__)
 
-# QAM 및 QPSK 인코더/디코더 인스턴스 생성
-qam_coder = QAMCoder()
-qpsk_coder = QPSKCoder()
+# 변조 방법 매핑 - 인스턴스를 미리 생성하여 재사용
+modulators = {
+    'qpsk': QPSKModulator(),
+    'bpsk': BPSKModulator()
+}
 
-# QAM Encoding endpoint
-@app.route("/encode/qam", methods=["POST"])
-def encode_qam():
-    input_data = request.json
-    signal = input_data.get("signal", [])
-    modulation_order = input_data.get("modulation_order", 16)
+@app.route('/modulate/<method>', methods=['POST'])
+def modulate(method):
+    modulator = modulators.get(method)
+    if modulator is None:
+        return jsonify({'error_code': 1001, 'error': 'Invalid modulation method'}), 400
 
-    # QAM 인코딩 처리
-    encoded_signal = qam_coder.encode(signal, modulation_order)
-    
-    response_data = {"encoded_signal": encoded_signal}
-    return jsonify(response_data)
+    bits = request.json.get('bits')
+    if bits is None:
+        return jsonify({'error_code': 1002, 'error': 'Missing bits data'}), 400
 
-# QAM Decoding endpoint
-@app.route("/decode/qam", methods=["POST"])
-def decode_qam():
-    input_data = request.json
-    encoded_signal = input_data.get("encoded_signal", [])
-    modulation_order = input_data.get("modulation_order", 16)
+    try:
+        symbols_real_imag = modulator.process_modulate_request(bits)
+    except ValueError as e:
+        return jsonify({'error_code': 1003, 'error': str(e)}), 400
 
-    # QAM 디코딩 처리
-    decoded_signal = qam_coder.decode(encoded_signal, modulation_order)
-    
-    response_data = {"decoded_signal": decoded_signal}
-    return jsonify(response_data)
+    return jsonify({'symbols': symbols_real_imag})
 
-# QPSK Encoding endpoint
-@app.route("/encode/qpsk", methods=["POST"])
-def encode_qpsk():
-    input_data = request.json
-    signal = input_data.get("signal", [])
-    modulation_order = input_data.get("modulation_order", 4)
+@app.route('/demodulate/<method>', methods=['POST'])
+def demodulate(method):
+    modulator = modulators.get(method)
+    if modulator is None:
+        return jsonify({'error_code': 1001, 'error': 'Invalid demodulation method'}), 400
 
-    # QPSK 인코딩 처리
-    encoded_signal = qpsk_coder.encode(signal, modulation_order)
-    
-    response_data = {"encoded_signal": encoded_signal}
-    return jsonify(response_data)
+    symbols_real_imag = request.json.get('symbols')
+    if symbols_real_imag is None:
+        return jsonify({'error_code': 1004, 'error': 'Missing symbols data'}), 400
 
-# QPSK Decoding endpoint
-@app.route("/decode/qpsk", methods=["POST"])
-def decode_qpsk():
-    input_data = request.json
-    encoded_signal = input_data.get("encoded_signal", [])
-    modulation_order = input_data.get("modulation_order", 4)
+    try:
+        bits = modulator.process_demodulate_request(symbols_real_imag)
+    except ValueError as e:
+        return jsonify({'error_code': 1005, 'error': str(e)}), 400
 
-    # QPSK 디코딩 처리
-    decoded_signal = qpsk_coder.decode(encoded_signal, modulation_order)
-    
-    response_data = {"decoded_signal": decoded_signal}
-    return jsonify(response_data)
+    return jsonify({'bits': bits})
 
-if __name__ == "__main__":
-    # Flask 서버 실행
-    app.run(host="0.0.0.0", port=5002)
+if __name__ == '__main__':
+    app.run(port=5002)
