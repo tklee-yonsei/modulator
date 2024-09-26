@@ -2,6 +2,23 @@
 
 변복조 서버를 위한 API 문서입니다.
 
+본 프로젝트의 설명은 다음 링크에서 보실 수 있습니다.
+
+https://hot-periwinkle-9ea.notion.site/d8c0797eff484f98b099cb9ed885965f
+
+## 관련 작업
+
+본 프로젝트의 github 및 연관 프로젝트의 github 주소는 다음과 같습니다.
+
+- 팀1 - 채널 코딩/디코딩 - coder
+    - https://github.com/tklee-yonsei/preprocess
+- 팀2 - 변복조 - modulator
+    - https://github.com/tklee-yonsei/modulator
+- 팀3 - 노이즈 - noise
+    - https://github.com/tklee-yonsei/noise
+- 클라이언트
+    - https://github.com/tklee-yonsei/client
+
 ## API 엔드포인트
 
 ### 1. 변조
@@ -68,12 +85,12 @@
 
 ## 시작하기
 
-이 섹션에서는 다양한 환경에서 전처리 서버를 설정하고, 
+이 섹션에서는 다양한 환경에서 서버를 설정하고, 
 실행하는 방법에 대한 지침을 제공합니다.
 
 ### 로컬 개발
 
-로컬 개발 환경에서 전처리 서버를 실행하려면, 
+로컬 개발 환경에서 서버를 실행하려면, 
 Docker가 설치되어 있는지 확인하고, 
 제공된 Dockerfile을 사용하여 서버를 빌드하고 실행하세요.
 
@@ -91,7 +108,7 @@ Docker가 설치되어 있는지 확인하고,
 
 ### mock
 
-mock 환경에서 전처리 서버를 실행하려면, 
+mock 환경에서 서버를 실행하려면, 
 Docker가 설치되어 있는지 확인하고, 
 제공된 Dockerfile을 사용하여 서버를 빌드하고 실행하세요.
 
