@@ -16,7 +16,9 @@
   },
   "runArgs": [
     "--init",
-    "--rm",
+    // "--rm",
+    "--name",
+    "api_server-modulator-dev_container",
     "-v",
     "${localWorkspaceFolder}:/app"
   ]
